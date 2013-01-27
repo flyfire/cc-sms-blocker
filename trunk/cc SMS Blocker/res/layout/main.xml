@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/HomeNavWrap"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#404040"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/HomeNav"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="2dip"
+            android:paddingTop="4dip" >
+
+            <Button
+                android:id="@+id/BtnBlockedMsg"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/btn_Blocked_Msg"
+                android:textColor="#999"
+                android:textSize="14dip" 
+                android:layout_weight="1">
+            </Button>
+
+            <Button
+                android:id="@+id/BtnRules"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/btn_Rules"
+                android:textColor="#999"
+                android:textSize="14dip" 
+                android:layout_weight="1">
+            </Button>
+        </LinearLayout>
+ <LinearLayout
+            
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <View
+            android:id="@+id/leftcolor"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="5px"
+            android:visibility="visible"
+            android:background="#499FBC" >
+        </View>
+		<View
+		    android:id="@+id/rightcolor"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="5px"
+            android:visibility="invisible"
+            android:background="#499FBC" >
+        </View>
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="3px"
+            android:layout_gravity="center"
+            android:background="#499FBC" >
+        </View>
+    </LinearLayout>
+
+    <com.github.ysamlan.horizontalpager.HorizontalPager
+        android:id="@+id/horizontal_pager"
+        android:layout_width="fill_parent"
+        android:layout_height="0px"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <ListView
+                android:id="@+id/blockedmsglist"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/android:empty"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="@string/rules_empty"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/btn_add_rule"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:text="@string/btn_add_rule"
+                android:textColor="#ff333333"
+                android:textSize="18.0sp"
+                android:textStyle="bold" />
+
+            <ListView
+                android:id="@+id/ruleslist"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/android:empty"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="@string/rules_empty"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </com.github.ysamlan.horizontalpager.HorizontalPager>
+
+</LinearLayout>
