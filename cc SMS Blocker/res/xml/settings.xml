@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="设置">
+        <CheckBoxPreference android:summaryOff="已关闭" android:summaryOn="已开启" android:title="开启CC短信过滤" android:defaultValue="true" android:key="enablesmsblocker"/>
+        <CheckBoxPreference android:key="phonecontact" android:defaultValue="true" android:summaryOff="按规则拦截" android:summaryOn="不拦截联系人（推荐）" android:title="手机联系人"/>
+        <CheckBoxPreference android:title="仅接受联系人和白名单" android:key="onlycontactwhite" android:defaultValue="false"/>
+        <EditTextPreference android:title="时段规则" android:enabled="false" android:selectable="false"/>
+        <CheckBoxPreference android:title="通知栏消息" android:summaryOn="开启拦截短信后提示" android:summaryOff="关闭拦截提示" android:defaultValue="true" android:key="enablenotification"/>
+        
+    </PreferenceCategory>
+    <PreferenceCategory android:title="关于">
+        <Preference android:selectable="false" android:summary="@string/app_ver" android:enabled="false" android:title="软件版本"/><Preference android:summary="Beta www.LCC.im" android:title="作者" android:selectable="false" android:enabled="false"/><Preference android:title="帮助" android:summary="匹配规则详细说明" android:key="ruleshelp" />
+        
+        <Preference android:summary="点击发送到 godwasdog@gmail.com" android:title="建议反馈" android:enabled="true" android:key="mailto"/>
+        
+
+    </PreferenceCategory>
+</PreferenceScreen>

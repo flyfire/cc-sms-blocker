@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<Button android:id="@+id/btn_add_rule" android:text="@string/btn_add_rule" android:textColor="#ff333333" android:textSize="18.0sp" android:textStyle="bold" android:layout_width="fill_parent"  
+    android:layout_height="wrap_content" android:layout_margin="8dp" android:layout_gravity="center_horizontal"/>
+  	
+	<ListView
+		android:id="@id/android:list"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"/>
+		
+	<TextView android:id="@id/android:empty" 
+	    android:textAppearance="?android:attr/textAppearanceLarge"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent"
+		android:gravity="center" 
+		android:text="@string/rules_empty"
+		android:textSize="16sp"/>
+		
+</LinearLayout>

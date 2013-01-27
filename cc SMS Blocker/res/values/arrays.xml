@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="rule_type">
+		<item>@string/type_blocked_number</item>
+		<item>@string/type_trusted_number</item>
+		<item>@string/type_blocked_beginning_of_number</item>
+		<item>@string/type_blocked_keyword</item>
+		<item>@string/type_trusted_keyword</item>
+		<item>@string/type_blocked_count_number</item>
+		<item>@string/type_blocked_keyword_regexp</item>
+	</string-array>
+</resources>
