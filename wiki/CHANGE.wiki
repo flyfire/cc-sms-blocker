@@ -1,4 +1,4 @@
-#labels Change
+#labels 更新日志
 *0.0.2.1[2013.1.22]*
  * fix 一个白名单bug
  * improve 优化短信过滤速度,效率提升5倍
