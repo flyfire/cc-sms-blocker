@@ -23,38 +23,38 @@ public class MessageUtils {
 			return;
 		}
 
-		//声明通知（消息）管理器 
+		//脡霉脙梅脥篓脰陋拢篓脧没脧垄拢漏鹿脺脌铆脝梅 
 		NotificationManager mNotificationManager;
 		Intent  mIntent;
 		PendingIntent mPendingIntent;
-		//声明Notification对象
+		//脡霉脙梅Notification露脭脧贸
 		Notification  mNotification;
 
-		//初始化NotificationManager对象 
+		//鲁玫脢录禄炉NotificationManager露脭脧贸 
 		mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		mIntent=new Intent(context, Main.class);
-		/** 设置 */
+		/** 脡猫脰脙 */
 
-		//点击通知时转移内容 
+		//碌茫禄梅脥篓脰陋脢卤脳陋脪脝脛脷脠脻 
 		//Intent intent = new Intent(this, this.getClass());
 		//intent.addCategory(WINDOW_SERVICE);
-		//主要是设置点击通知时显示内容的类 
-		mPendingIntent = PendingIntent.getActivity(context, 0, mIntent, 0); //如果转移内容则用m_Intent();
-		//构造Notification对象 
+		//脰梅脪陋脢脟脡猫脰脙碌茫禄梅脥篓脰陋脢卤脧脭脢戮脛脷脠脻碌脛脌脿 
+		mPendingIntent = PendingIntent.getActivity(context, 0, mIntent, 0); //脠莽鹿没脳陋脪脝脛脷脠脻脭貌脫脙m_Intent();
+		//鹿鹿脭矛Notification露脭脧贸 
 		mNotification = new Notification(); 
-		//设置通知在状态栏显示的图标 
+		//脡猫脰脙脥篓脰陋脭脷脳麓脤卢脌赂脧脭脢戮碌脛脥录卤锚 
 		mNotification.icon = R.drawable.noti;
-		//当我们点击通知时显示的内容 
-		mNotification.tickerText = "已过滤短信:"+body; 
-		//通知时发出默认的声音 
+		//碌卤脦脪脙脟碌茫禄梅脥篓脰陋脢卤脧脭脢戮碌脛脛脷脠脻 
+		mNotification.tickerText = "脪脩鹿媒脗脣露脤脨脜:"+body; 
+		//脥篓脰陋脢卤路垄鲁枚脛卢脠脧碌脛脡霉脪么 
 		//		  mNotification.defaults = Notification.DEFAULT_SOUND;
 
-		//设置通知显示的参数 
+		//脡猫脰脙脥篓脰陋脧脭脢戮碌脛虏脦脢媒 
 		mNotification.setLatestEventInfo(context, context.getString(R.string.app_name), body, mPendingIntent); 
-		//可以理解为执行这个通知 
+		//驴脡脪脭脌铆陆芒脦陋脰麓脨脨脮芒赂枚脥篓脰陋 
 		mNotificationManager.notify(R.string.app_name, mNotification); 
 
-		/** 取消 */
+		/** 脠隆脧没 */
 
 		//		  mNotificationManager.cancelAll();
 
@@ -63,9 +63,9 @@ public class MessageUtils {
 	public static void sendBlockMessageToMe(Context context,String msg){
 		try
         {
-          Intent localIntent = new Intent("android.intent.action.SENDTO", Uri.parse("mailto:godwasdog@gmail.com"));
-          localIntent.putExtra("android.intent.extra.TEXT", "您的举报将造福所有用户!\n\n"+msg );
-          localIntent.putExtra("android.intent.extra.SUBJECT", "[Report]感谢您的举报" );
+          Intent localIntent = new Intent("android.intent.action.SENDTO", Uri.parse("mailto:ccsmsblocker@gmail.com"));
+          localIntent.putExtra("android.intent.extra.TEXT", "脛煤碌脛戮脵卤篓陆芦脭矛赂拢脣霉脫脨脫脙禄搂!\n\n"+msg );
+          localIntent.putExtra("android.intent.extra.SUBJECT", "[Report]赂脨脨禄脛煤碌脛戮脵卤篓" );
           context.startActivity(localIntent);
         }
         catch (ActivityNotFoundException localActivityNotFoundException)
