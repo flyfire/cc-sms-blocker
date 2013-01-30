@@ -45,7 +45,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	      {
 	        try
 	        {
-	          Intent localIntent = new Intent("android.intent.action.SENDTO", Uri.parse("mailto:godwasdog@gmail.com"));
+	          Intent localIntent = new Intent("android.intent.action.SENDTO", Uri.parse("mailto:ccsmsblocker@gmail.com"));
 	          localIntent.putExtra("android.intent.extra.SUBJECT", "CC SMS Blocker "+getString(R.string.app_ver) );
 	          startActivity(localIntent);
 	        }
