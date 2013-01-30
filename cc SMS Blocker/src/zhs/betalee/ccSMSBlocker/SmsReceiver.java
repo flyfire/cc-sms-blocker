@@ -73,7 +73,7 @@ public class SmsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent){
 
-//    	¿ªÆôCC¶ÌĞÅ¹ıÂË
+//    	Â¿ÂªÃ†Ã´CCÂ¶ÃŒÃÃ…Â¹Ã½Ã‚Ã‹
     	if (!Settings.getBoolean(context, "enablesmsblocker")) {
     		return;
 		}    	
@@ -99,19 +99,19 @@ public class SmsReceiver extends BroadcastReceiver {
          String msgbodyString=msgbody.toString();
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
-         //¿Û·ÑºÅÂë
+         //Â¿Ã›Â·Ã‘ÂºÃ…Ã‚Ã«
          if (Pattern.matches("1062.*", addressnumber)||Pattern.matches("1066.*", addressnumber)) {
-        	 blockMessage(context,"[»Ø¸´¿Û·ÑºÅÂë]");
+        	 blockMessage(context,"[Â»Ã˜Â¸Â´Â¿Ã›Â·Ã‘ÂºÃ…Ã‚Ã«]");
         	 return;
          }
 
-         //¿Û·ÑºÅÂë end    	
+         //Â¿Ã›Â·Ã‘ÂºÃ…Ã‚Ã« end    	
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////         
          
          
          
-//    	²»À¹½ØÁªÏµÈË||½ö½ÓÊÜÁªÏµÈË°×Ãûµ¥
+//    	Â²Â»Ã€Â¹Â½Ã˜ÃÂªÃÂµÃˆÃ‹||Â½Ã¶Â½Ã“ÃŠÃœÃÂªÃÂµÃˆÃ‹Â°Ã—ÃƒÃ»ÂµÂ¥
     	if (Settings.getBoolean(context, "phonecontact") || Settings.getBoolean(context, "onlycontactwhite")) {
 
     		ArrayList<String> listphoneNumber=ReadRules.getPhoneContacts(context);
@@ -129,8 +129,8 @@ public class SmsReceiver extends BroadcastReceiver {
     				
     			}
     		}
-        	//°×Ãûµ¥
-        	//°×ºÅÂë
+        	//Â°Ã—ÃƒÃ»ÂµÂ¥
+        	//Â°Ã—ÂºÃ…Ã‚Ã«
         	ArrayList<String> listWhitePhoneNumber=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_TRUSTED_NUMBER + "'");
         	try {
         		ArrayList<String> jsonWhitePhoneNumber=JsonParse.stringBuilderToArray(JsonParse.jsonToStringBuilder(context,zhs.betalee.ccSMSBlocker.R.raw.white_num_list),null);
@@ -153,7 +153,7 @@ public class SmsReceiver extends BroadcastReceiver {
     				
     			}
     		}
-        	//°×¹Ø¼ü´Ê
+        	//Â°Ã—Â¹Ã˜Â¼Ã¼Â´ÃŠ
         	ArrayList<String> listWhiteWordNumber=ReadRules.whiteKeyWordRules(mDbAdapter);
         	String[] whiteWordNumbers = listWhiteWordNumber.toArray(new String[listWhiteWordNumber.size()]);
         	size=whiteWordNumbers.length;
@@ -168,21 +168,21 @@ public class SmsReceiver extends BroadcastReceiver {
     				
     			}
     		}
-        	//°×Ãûµ¥end
+        	//Â°Ã—ÃƒÃ»ÂµÂ¥end
         	
         	if (Settings.getBoolean(context, "onlycontactwhite")) {
-        		blockMessage(context,"[½ö½ÓÊÜÁªÏµÈË°×Ãûµ¥]");
+        		blockMessage(context,"[Â½Ã¶Â½Ã“ÃŠÃœÃÂªÃÂµÃˆÃ‹Â°Ã—ÃƒÃ»ÂµÂ¥]");
         		
         		return;
     		}
-		}//    	²»À¹½ØÁªÏµÈË||½ö½ÓÊÜÁªÏµÈË°×Ãûµ¥ end
+		}//    	Â²Â»Ã€Â¹Â½Ã˜ÃÂªÃÂµÃˆÃ‹||Â½Ã¶Â½Ã“ÃŠÃœÃÂªÃÂµÃˆÃ‹Â°Ã—ÃƒÃ»ÂµÂ¥ end
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
-//    	ºÚÃûµ¥
+//    	ÂºÃšÃƒÃ»ÂµÂ¥
     	
-    	//ºÚºÅÂë
+    	//ÂºÃšÂºÃ…Ã‚Ã«
     	ArrayList<String> listPhoneNumber=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_BLOCKED_NUMBER + "' or type='"+Constants.TYPE_BLOCKED_BEGINNING_OF_NUMBER+"'");
     	try {
     		ArrayList<String> jsonPhoneNumber=JsonParse.stringBuilderToArray(JsonParse.jsonToStringBuilder(context,zhs.betalee.ccSMSBlocker.R.raw.black_num_list),null);
@@ -199,7 +199,7 @@ public class SmsReceiver extends BroadcastReceiver {
     		try {
     			
 				if (Pattern.matches(tempNum.toString(), addressnumber)) {
-					blockMessage(context, "[ºÚºÅÂë]"+phoneNumbers[i]);
+					blockMessage(context, "[ÂºÃšÂºÃ…Ã‚Ã«]"+phoneNumbers[i]);
 					return;
 				}
 			} catch (RuntimeException e) {
@@ -208,8 +208,8 @@ public class SmsReceiver extends BroadcastReceiver {
 			tempNum.delete(0, tempNum.length());
 			
 		}
-    	//ºÚºÅÂë end
-    	//Æ¥ÅäÎ»Êı
+    	//ÂºÃšÂºÃ…Ã‚Ã« end
+    	//Ã†Â¥Ã…Ã¤ÃÂ»ÃŠÃ½
     	ArrayList<String> listCountNumber=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_BLOCKED_COUNT_NUMBER + "'");
     	String[] conutNumbers = listCountNumber.toArray(new String[listCountNumber.size()]);
     	size=conutNumbers.length;
@@ -219,45 +219,43 @@ public class SmsReceiver extends BroadcastReceiver {
     		tempCount=Integer.parseInt(conutNumbers[i]);
     		try {	
 				if (count == tempCount) {
-					blockMessage(context, "[Æ¥ÅäÎ»ÊıºÅÂë]"+conutNumbers[i]);
+					blockMessage(context, "[Ã†Â¥Ã…Ã¤ÃÂ»ÃŠÃ½ÂºÃ…Ã‚Ã«]"+conutNumbers[i]);
 					return;
 				}
 			} catch (RuntimeException e) {
 				
 			}
 		}
-    	//Æ¥ÅäÎ»Êı end
+    	//Ã†Â¥Ã…Ã¤ÃÂ»ÃŠÃ½ end
     	
-    	//¿ÉÒÉÕ©Æ­///////////////////
-    	String[] zapianStrings=new String[] {".*»ã.*Ç®.*",".*Ç®.*»ã.*",".*´ò.*Ç®.*",".*Ç®.*´ò.*",".*»ã.*¿î.*",
-    			".*¿î.*»ã.*",".*´ò.*¿î.*",".*¿î.*´ò.*",".*´æ.*¿î.*",".*¿î.*´æ.*",".*ÓÊÕş.*°ü¹ü.*",
-    			".*°ü¹ü.*ÓÊÕş.*",".*»ú.*ĞÒÔË.*Âë.*",".*»úºÅ.*ĞÒÔË.*",".*Í¨Öª.*Î¥ÕÂ.*ÁªÏµ.*",
-    			".*ÒøĞĞ[¡¿\\]\\.\\¡£]*[\\w\\s]?",".*[¡¾\\[].\\s*ĞĞ[¡¿\\]]*[\\w\\s]?"};
+
+    	//å¯ç–‘è¯ˆéª—///////////////////
+    	final String[] zapianStrings=new String[] {".*è´¦å·.*",".*è´¦æˆ·.*",".*æ±‡[^\\p{P}]*é’±.*",".*é’±[^\\p{P}]*æ±‡.*",".*æ‰“[^\\p{P}]*é’±.*",".*é’±[^\\p{P}]*æ‰“.*",".*æ±‡[^\\p{P}]*æ¬¾.*",
+    			".*æ¬¾[^\\p{P}]*æ±‡.*",".*æ‰“[^\\p{P}]*æ¬¾.*",".*æ¬¾[^\\p{P}]*æ‰“.*",".*å­˜[^\\p{P}]*æ¬¾.*",".*æ¬¾[^\\p{P}]*å­˜.*",".*é‚®æ”¿.*åŒ…è£¹.*",
+    			".*åŒ…è£¹.*é‚®æ”¿.*",".*æœº.*å¹¸è¿.*ç .*",".*æœºå·.*å¹¸è¿.*",".*é€šçŸ¥.*è¿ç« .*è”ç³».*",
+    			".*é“¶è¡Œ[ã€‘\\]\\.\\ã€‚]*\\w{0,3}",".*[ã€\\[].?è¡Œ[ã€‘\\]]*\\w{0,3}"};
     	size=zapianStrings.length;
 
     	for (int i=0;i<size;i++) {
-
     		try {
-
-    			//    			Log.e("black_keyword_list", tempNum.toString());
-    			if (Pattern.matches(zapianStrings[i], msgbodyString)) {
-    				blockMessage(context, "[¿ÉÒÉÕ©Æ­]");
+    			if (patternMatches(zapianStrings[i], msgbodyMatcher)&&addressnumber.length()==11) {
+    				blockMessage(mContext, "[å¯ç–‘è¯ˆéª—]");
     				return;
     			}
     		} catch (RuntimeException e) {
-
     		}
-
     	}
 
     	
     	
-//    	¿ÉÒÉÕ©Æ­ end
-    	/////////////////////
+//å¯ç–‘è¯ˆéª— end
+/////////////////////
+    	
+
     	
     	
     	
-    	//ºÚ¹Ø¼ü´Ê 
+    	//ÂºÃšÂ¹Ã˜Â¼Ã¼Â´ÃŠ 
     	ArrayList<String> listKeyWord=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_BLOCKED_KEYWORD +"'");
     	try {
     		ArrayList<String> jsonKeyWord=JsonParse.stringBuilderToArray(JsonParse.jsonToStringBuilder(context,zhs.betalee.ccSMSBlocker.R.raw.black_keyword_list),"KEYWORD");
@@ -276,7 +274,7 @@ public class SmsReceiver extends BroadcastReceiver {
     		try {
     			
 				if (Pattern.matches(mKeyWord.toString(), msgbodyString)) {
-					blockMessage(context, "[¹Ø¼ü´Ê]"+keyWords[i]);
+					blockMessage(context, "[Â¹Ã˜Â¼Ã¼Â´ÃŠ]"+keyWords[i]);
 					return;
 				}
 			} catch (RuntimeException e) {
@@ -284,8 +282,8 @@ public class SmsReceiver extends BroadcastReceiver {
 			}
 			
 		}
-    	//ºÚ¹Ø¼ü´Ê end
-    	//ÕıÔò±í´ïÊ½ 
+    	//ÂºÃšÂ¹Ã˜Â¼Ã¼Â´ÃŠ end
+    	//Ã•Ã½Ã”Ã²Â±Ã­Â´Ã¯ÃŠÂ½ 
     	ArrayList<String> listRegexp=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_BLOCKED_KEYWORD_REGEXP + "'");
     	String[] regexpKeyWords = listRegexp.toArray(new String[listRegexp.size()]);
     	size=regexpKeyWords.length;
@@ -293,13 +291,13 @@ public class SmsReceiver extends BroadcastReceiver {
 
     		try {	
 				if (Pattern.matches(regexpKeyWords[i], msgbodyString)) {
-					blockMessage(context, "[ÕıÔò±í´ïÊ½ ]"+regexpKeyWords[i]);
+					blockMessage(context, "[Ã•Ã½Ã”Ã²Â±Ã­Â´Ã¯ÃŠÂ½ ]"+regexpKeyWords[i]);
 					return;
 				}
 			} catch (RuntimeException e) {
 			}
 		}
-    	//ÕıÔò±í´ïÊ½ end
+    	//Ã•Ã½Ã”Ã²Â±Ã­Â´Ã¯ÃŠÂ½ end
     	
 ////////////////////////////////////////////////////////////////////////////
 //    	All End
