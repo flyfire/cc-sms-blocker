@@ -1,23 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	<Button android:id="@+id/btn_add_rule" android:text="@string/btn_add_rule" android:textColor="#ff333333" android:textSize="18.0sp" android:textStyle="bold" android:layout_width="fill_parent"  
-    android:layout_height="wrap_content" android:layout_margin="8dp" android:layout_gravity="center_horizontal"/>
-  	
-	<ListView
-		android:id="@id/android:list"
+<RelativeLayout android:id="@+id/mainLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+<ListView
+		android:id="@id/android:list"   android:layout_above="@+id/btn_LinearLayout2"
 		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"/>
-		
-	<TextView android:id="@id/android:empty" 
-	    android:textAppearance="?android:attr/textAppearanceLarge"
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:gravity="center" 
-		android:text="@string/rules_empty"
-		android:textSize="16sp"/>
-		
-</LinearLayout>
+<TextView
+        android:id="@id/android:empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/rules_empty"
+        android:textColor="#999" 
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="20sp" />
+
+        <LinearLayout
+        android:id="@+id/btn_LinearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ab_bottom_solid_light_holo"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/btn_add_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" android:background="@drawable/btn_linearlayout"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_add" />
+
+
+        <ImageButton
+            android:id="@+id/btn_search_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" android:background="@drawable/btn_linearlayout"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_search" />
+    </LinearLayout>
+</RelativeLayout>

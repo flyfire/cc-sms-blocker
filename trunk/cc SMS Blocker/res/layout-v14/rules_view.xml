@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/mainLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+   
+<ListView
+		android:id="@id/android:list" android:layout_above="@+id/btn_LinearLayout2"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"/>
+<TextView
+        android:id="@id/android:empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/rules_empty"
+        android:textColor="#999" 
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="20sp" />
+
+
+        <LinearLayout
+        android:id="@+id/btn_LinearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ab_bottom_solid_light_holo"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/btn_add_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" style="?android:attr/borderlessButtonStyle"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_add" />
+
+
+        <ImageButton
+            android:id="@+id/btn_search_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" style="?android:attr/borderlessButtonStyle"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_search" />
+    </LinearLayout>
+</RelativeLayout>

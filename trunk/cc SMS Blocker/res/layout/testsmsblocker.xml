@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/mainLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView android:id="@+id/TextView_test_sms_blocker" android:scrollbars="vertical"
+            android:layout_width="fill_parent" android:layout_height="wrap_content" 
+            android:text="@string/test_sms_blocker" android:layout_marginLeft="10dp" android:layout_marginRight="10dp" />
+
+    <Button
+        android:id="@+id/btn_test_sms_blocker"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+       android:layout_below="@+id/TextView_test_sms_blocker"
+        android:text="测试短信拦截" android:layout_marginLeft="10dp" android:layout_marginRight="10dp"/>
+    <Button
+        android:id="@+id/btn_test_sms_blocker_pinfen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+       android:layout_below="@+id/btn_test_sms_blocker"
+        android:text="去Google play评分" android:layout_marginLeft="10dp" android:layout_marginRight="10dp" android:layout_marginTop="10dp"/>
+
+<Button
+    android:id="@+id/btn_test_sms_blocker_donate"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/btn_test_sms_blocker_pinfen"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:text="通过 支付宝 捐助 " />
+            
+            <CheckBox
+                android:id="@+id/cb_nevertest"
+                android:layout_below="@+id/btn_test_sms_blocker_donate"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="不再弹出提示" />
+
+</RelativeLayout>

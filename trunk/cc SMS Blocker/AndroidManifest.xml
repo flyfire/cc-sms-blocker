@@ -1,33 +1,154 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="zhs.betalee.ccSMSBlocker"
-    android:versionCode="1"
-    android:versionName="0.0.1.6">
+    android:versionCode="36"
+    android:versionName="0.0.5.7" >
 
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="9" android:maxSdkVersion="15"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS" /><uses-permission android:name="android.permission.WRITE_SMS" /><uses-permission android:name="android.permission.READ_CONTACTS"/> 
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="9" />
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+   <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" /> -->
+	<uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
 	
-     
-
-    <application android:label="@string/app_name"
+<application
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme">
-		<activity android:label="@string/app_name"
-			android:name=".ui.Main" android:configChanges="orientation">
-		<intent-filter>
-				<action android:name="android.intent.action.MAIN"></action>
-				<category android:name="android.intent.category.LAUNCHER"></category>
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".ui.MainV4"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+  <!--         <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+            </intent-filter> -->  
+        </activity>
+
+        <receiver android:name="SmsReceiver" >
+            <intent-filter android:priority="2147483647" >
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="MmsReceiver" >
+            <intent-filter android:priority="2147483647" >
+                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="WapPushReceiver" >
+            <intent-filter android:priority="2147483647" >
+				<action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />  
+				<data android:mimeType="application/vnd.wap.sic" />
 			</intent-filter>
-		</activity>
-		<receiver android:name="SmsReceiver" >
-		    <intent-filter android:priority="2147483647">
-					<action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
-					<category android:name="android.intent.category.DEFAULT" />
-				</intent-filter>
-		</receiver>
-		<activity android:name=".ui.Settings"></activity>
-		<service android:name="SmsReceiverService"></service>
-		<activity android:name=".ui.RulesHelp"></activity>
-    </application>
+        </receiver>
+ <!--        <receiver android:name="PhoneReceiver" >
+            <intent-filter android:priority="2147483647" >
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver> -->
+        <receiver android:name="BootReceiver">
+             <intent-filter android:priority="2147483647" >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <service android:name="CCBlockerService" android:enabled="true"/>
+        <activity
+            android:name=".ui.Settings"
+            android:theme="@style/SettingsTheme" >
+        </activity>
+        <activity
+            android:name=".ui.RulesHelp"
+            android:theme="@style/SettingsTheme" android:label="@string/title_RulesHelp">
+        </activity>
+        <activity
+            android:name=".ui.EditRules"
+            android:label="@string/title_ChoiceWayAddRule"
+            android:theme="@style/DialogTheme" >
+        </activity>
+        <activity
+            android:name=".ui.SendSMSToEmail"
+            android:label="@string/title_SendSMSToEmail"
+            android:theme="@style/DialogTheme" >
+        </activity>
+        <activity
+            android:name=".ui.AddressFormInbox"
+            android:label="@string/title_AddressFormInbox"
+            android:theme="@style/DialogTheme" >
+        </activity>
+        <activity
+            android:name=".ui.ChoiceWayAddRule"
+            android:label="@string/title_ChoiceWayAddRule"
+            android:theme="@style/DialogTheme" >
+        </activity>
+        <activity
+            android:name=".ui.AdvancedSettings"
+            android:label="@string/title_AdvancedSettings"
+            android:theme="@style/SettingsTheme" >
+        </activity>
+        <activity
+            android:name=".ui.AdvancedWhiteRulesListView"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_AdvancedWhiteRulesListView"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.AdvancedBlackRulesListView"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_AdvancedBlackRulesListView"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.SystemRules"
+            android:label="@string/title_SystemRules"
+            android:theme="@style/SettingsTheme" >
+        </activity>
+        <activity
+            android:name=".ui.AllowedMsgListView"
+            android:label="@string/title_AllowedMsgListView" >
+        </activity>
+        <activity
+            android:name=".ui.TestSMSBlocker"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_TestSMSBlocker"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.sms.SmsBlockedLog"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="zhs.betalee.ccSMSBlocker.SmsBlockedLog"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.sms.SmsRulesListView"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_SmsRulesListView"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:theme="@style/DialogTheme" android:name=".ui.Donate" android:label="@string/title_Donate"></activity>
+        <activity android:label="@string/title_SwipeSettings" android:name=".ui.SwipeSettings"></activity>
+        
+
+</application>
 
 </manifest>

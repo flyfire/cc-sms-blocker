@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <Preference android:title="自定义拦截规则优先级" android:selectable="false" android:enabled="false"/>
+    <Preference android:title="导出规则" android:selectable="false" android:enabled="false"/>
+    <Preference android:title="导入规则" android:selectable="false" android:enabled="false"/>
+
+    
+    
+    
+    
+    
+
+</PreferenceScreen>

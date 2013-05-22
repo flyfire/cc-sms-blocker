@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string-array name="rule_type">
-		<item>@string/type_blocked_number</item>
-		<item>@string/type_trusted_number</item>
-		<item>@string/type_blocked_beginning_of_number</item>
-		<item>@string/type_blocked_keyword</item>
-		<item>@string/type_trusted_keyword</item>
-		<item>@string/type_blocked_count_number</item>
-		<item>@string/type_blocked_keyword_regexp</item>
+		<item>@string/custom_blocked_number</item>
+		<item>@string/custom_trusted_number</item>
+		<item>@string/in_blocked_keyword</item>
+		<item>@string/custom_trusted_keyword</item>
+		<item>@string/custom_blocked_count_number</item>
+		<item>@string/custom_blocked_keyword_regexp</item>
+		<item>@string/in_trusted_number</item>
+		<item>@string/custom_blocked_keyword</item>
 	</string-array>
+	<string-array name="phone_rule_type">
+		<item>@string/custom_blocked_number</item>
+	</string-array>
+	
+	<string-array name="block_phone_entry">  
+        <item>关机</item>   
+        <item>停机</item>  
+        <item>空号</item>  
+        <item>取消</item>     
+    </string-array>  
+    <string-array name="block_phone_value">  
+        <item>1</item>  
+        <item>2</item>  
+        <item>4</item>  
+        <item>8</item>     
+    </string-array>
+ 
 </resources>

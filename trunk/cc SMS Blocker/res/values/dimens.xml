@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="min_swipe">10.0dip</dimen>
+    <dimen name="min_vert">10.0dip</dimen>
+    <dimen name="min_lock">20.0dip</dimen>
+</resources>
