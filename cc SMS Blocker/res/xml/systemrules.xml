@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="白名单" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="builtinwhitelist"
+            android:summaryOff="已关闭"
+            android:summaryOn="已启用(推荐)"
+            android:title="内置白名单开关" />
+
+        <Preference
+            android:key="editbuiltinwhitelist"
+            android:title="内置白号码编辑" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="黑名单" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="builtinblacklist"
+            android:summaryOff="已关闭"
+            android:summaryOn="已启用(推荐)"
+            android:title="内置黑名单开关" />
+
+        <Preference
+            android:key="editbuiltinblacklist"
+            android:title="内置黑名单编辑" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

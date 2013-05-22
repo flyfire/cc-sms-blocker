@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/mainLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <ListView
+        android:id="@+id/blockedmsglist" android:layout_above="@+id/btn_LinearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/msg_empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/rules_empty"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#999"
+        android:textSize="20sp" />
+
+            <LinearLayout
+        android:id="@+id/btn_LinearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ab_bottom_solid_light_holo"
+        android:orientation="horizontal" >
+        <ImageButton
+            android:id="@+id/btn_del_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" android:background="@drawable/btn_linearlayout"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_delete" />
+        
+        <ImageButton
+            android:id="@+id/btn_read_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" android:background="@drawable/btn_linearlayout"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_edit" />
+
+		<ImageButton
+            android:id="@+id/btn_recover_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" android:background="@drawable/btn_linearlayout"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_rotate" />
+        
+    </LinearLayout>
+</RelativeLayout>

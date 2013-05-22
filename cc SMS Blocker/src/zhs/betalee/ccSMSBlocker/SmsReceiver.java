@@ -1,51 +1,31 @@
 package zhs.betalee.ccSMSBlocker;
-/*
- * Copyright (C) 2007-2008 Esmertec AG.
- * Copyright (C) 2007-2008 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import zhs.betalee.ccSMSBlocker.database.Constants;
 import zhs.betalee.ccSMSBlocker.database.DbAdapter;
 import zhs.betalee.ccSMSBlocker.database.ReadRules;
-import zhs.betalee.ccSMSBlocker.ui.Main;
+import zhs.betalee.ccSMSBlocker.database.UpdataVerDatabase;
+import zhs.betalee.ccSMSBlocker.ui.AdvancedSettings;
 import zhs.betalee.ccSMSBlocker.ui.Settings;
 import zhs.betalee.ccSMSBlocker.util.JsonParse;
 import zhs.betalee.ccSMSBlocker.util.MessageUtils;
-
-
-
-
 import android.R.integer;
-import android.R.raw;
-import android.R.string;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.PowerManager;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsMessage;
-import android.text.InputFilter.AllCaps;
+import android.text.format.Time;
 import android.util.Log;
-import android.widget.Toast;
+
+
 
 
 /**
@@ -53,16 +33,26 @@ import android.widget.Toast;
  */
 public class SmsReceiver extends BroadcastReceiver {
 	private StringBuilder msgbody=new StringBuilder();
-	private String formaddress;
+	private String formaddress=null;
 	private long fromtime;
 	
-	private DbAdapter mDbAdapter;
+	private DbAdapter mDbAdapter=null;
 //	private ReadRules readRules;
 	
-    static final Object mStartingServiceSync = new Object();
-    static PowerManager.WakeLock mStartingService;
-    private static SmsReceiver sInstance;
-    private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
+//	private Matcher numberMatcher=null;
+	private Matcher msgbodyMatcher=null;
+	private String addressnumber;
+	private String msgbodyString;
+	
+	private String signaturesString=new String();
+	private String MCC;
+
+	
+	static final Object mStartingServiceSync = new Object();
+    static PowerManager.WakeLock mStartingService=null;
+    private static SmsReceiver sInstance=null;
+	private static final String SMS_RECEIVED_ACTION = "android.provider.Telephony.SMS_RECEIVED"; 
+	private static final String  MMS_RECEIVED_ACTION = "android.provider.Telephony.WAP_PUSH_RECEIVED";
     public static SmsReceiver getInstance() {
         if (sInstance == null) {
             sInstance = new SmsReceiver();
@@ -72,19 +62,26 @@ public class SmsReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent){
-
-//    	¬ø¬™√Ü√¥CC¬∂√å√ê√Ö¬π√Ω√Ç√ã
-    	if (!Settings.getBoolean(context, "enablesmsblocker")) {
+    	final Context mContext=context;
+//    	ø™∆ÙCC∂Ã–≈π˝¬À
+    	if (!Settings.getBoolean(mContext, "enablesmsblocker")) {
     		return;
-		}    	
-    	if (intent.getAction().equals(SMS_RECEIVED)) 
+		}   
+
+    	//    	writeError(mContext, "101");
+    	beginStartingService(context, intent);
+
+    	
+//    	writeError(mContext, "102");
+    	if (intent.getAction().equals(SMS_RECEIVED_ACTION)) 
     	{
     		Object[] pdus = (Object[])intent.getExtras().get("pdus");
     		SmsMessage[] messages = new SmsMessage[pdus.length];
     		for (int i = 0; i < pdus.length; i++){
     			messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
     		}
-
+    		
+    		msgbody.delete(0, msgbody.length());
     		for (SmsMessage message : messages) 
     		{
     			msgbody.append(message.getMessageBody());
@@ -93,242 +90,222 @@ public class SmsReceiver extends BroadcastReceiver {
     		}
     	}
 
-    	 mDbAdapter = new DbAdapter(context);
-         mDbAdapter.open();
-         String addressnumber=formaddress.replaceFirst("\\+86", "");
-         String msgbodyString=msgbody.toString();
-///////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////
-         //¬ø√õ¬∑√ë¬∫√Ö√Ç√´
-         if (Pattern.matches("1062.*", addressnumber)||Pattern.matches("1066.*", addressnumber)) {
-        	 blockMessage(context,"[¬ª√ò¬∏¬¥¬ø√õ¬∑√ë¬∫√Ö√Ç√´]");
-        	 return;
-         }
+    	writeError(mContext, "103");
+    	
+    	mDbAdapter=null;
+    	mDbAdapter = new DbAdapter(mContext);
 
-         //¬ø√õ¬∑√ë¬∫√Ö√Ç√´ end    	
+
+//    	writeError(mContext, "104");
+    	MCC=MessageUtils.fetchMCC(mContext);
+//    	System.out.println(MCC);
+    	addressnumber=formaddress;
+		if (addressnumber.startsWith(MCC)) {
+			addressnumber=addressnumber.substring(MCC.length());
+		}
+		writeError(mContext, "105");
+         msgbodyString=msgbody.toString().replaceAll("\\s", "").toLowerCase();
+         
+//         Log.e("msgbody",msgbody.toString());
+//         Log.e("msgbody2",msgbodyString);
+//         final long start=System.currentTimeMillis();
+        
+//         Pattern pattern=Pattern.compile("0");
+//         numberMatcher=pattern.matcher(addressnumber);
+//         msgbodyMatcher=pattern.matcher(msgbodyString);
+
+         
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+  	
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////         
          
-         
-         
-//    	¬≤¬ª√Ä¬π¬Ω√ò√Å¬™√è¬µ√à√ã||¬Ω√∂¬Ω√ì√ä√ú√Å¬™√è¬µ√à√ã¬∞√ó√É√ª¬µ¬•
-    	if (Settings.getBoolean(context, "phonecontact") || Settings.getBoolean(context, "onlycontactwhite")) {
-
-    		ArrayList<String> listphoneNumber=ReadRules.getPhoneContacts(context);
-        	String[] phoneNumbers = listphoneNumber.toArray(new String[listphoneNumber.size()]);
-        	
-        	int size=phoneNumbers.length;
-        	for (int i=0;i<size;i++) {
-        		try {
-    				if (Pattern.matches(phoneNumbers[i], addressnumber)) {
-
-    					mDbAdapter.close();
-    					return;
-    				}
-    			} catch (RuntimeException e) {
-    				
-    			}
-    		}
-        	//¬∞√ó√É√ª¬µ¬•
-        	//¬∞√ó¬∫√Ö√Ç√´
-        	ArrayList<String> listWhitePhoneNumber=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_TRUSTED_NUMBER + "'");
-        	try {
-        		ArrayList<String> jsonWhitePhoneNumber=JsonParse.stringBuilderToArray(JsonParse.jsonToStringBuilder(context,zhs.betalee.ccSMSBlocker.R.raw.white_num_list),null);
-        		listWhitePhoneNumber.addAll(jsonWhitePhoneNumber);
-        	} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+//    	ΩˆΩ” ‹¡™œµ»À∞◊√˚µ•
+		if (Settings.getBoolean(mContext, "onlycontactwhite") || Settings.getBoolean(mContext, "period")) {
+			//    		¡™œµ»À
+			writeError(mContext, "106");
+			if (allowPhoneContacts(mContext)) {
+				return;
 			}
-        	String[] whitePhoneNumbers = listWhitePhoneNumber.toArray(new String[listWhitePhoneNumber.size()]);
-        	size=whitePhoneNumbers.length;
-        	for (int i=0;i<size;i++) {
-        		whitePhoneNumbers[i]=whitePhoneNumbers[i].replaceAll("\\?", ".").replaceAll("\\*", ".*");
-        		try {
-        			
-    				if (Pattern.matches(whitePhoneNumbers[i], addressnumber)) {
-    					mDbAdapter.close();
-    					return;
-    				}
-    			} catch (RuntimeException e) {
-    				
-    			}
-    		}
-        	//¬∞√ó¬π√ò¬º√º¬¥√ä
-        	ArrayList<String> listWhiteWordNumber=ReadRules.whiteKeyWordRules(mDbAdapter);
-        	String[] whiteWordNumbers = listWhiteWordNumber.toArray(new String[listWhiteWordNumber.size()]);
-        	size=whiteWordNumbers.length;
-        	
-        	for (int i=0;i<size;i++) {
-        		try {
-    				if (Pattern.matches(whiteWordNumbers[i], msgbodyString)) {
-    					mDbAdapter.close();
-    					return;
-    				}
-    			} catch (RuntimeException e) {
-    				
-    			}
-    		}
-        	//¬∞√ó√É√ª¬µ¬•end
-        	
-        	if (Settings.getBoolean(context, "onlycontactwhite")) {
-        		blockMessage(context,"[¬Ω√∂¬Ω√ì√ä√ú√Å¬™√è¬µ√à√ã¬∞√ó√É√ª¬µ¬•]");
-        		
-        		return;
-    		}
-		}//    	¬≤¬ª√Ä¬π¬Ω√ò√Å¬™√è¬µ√à√ã||¬Ω√∂¬Ω√ì√ä√ú√Å¬™√è¬µ√à√ã¬∞√ó√É√ª¬µ¬• end
+//			writeError(mContext, "107");
+			// ±∂ŒπÊ‘Ú			
+			if (blockTime(mContext)) {
+				return;
+			}
+//			writeError(mContext, "108");
+			if (Settings.getBoolean(mContext, "onlycontactwhite")){
+				//        		System.out.println("onlycontactwhite");
+				//∞◊√˚µ•
+				//∞◊∫≈¬Î
+				if (allowWhiteNumbers(mContext,true)) {
+					return;
+				}
+				//∞◊πÿº¸¥ 
+				if (allowWhiteWord(mContext)) {
+					return;
+				}
+				//∞◊√˚µ•end
+
+				blockMessage(mContext,"[Ωˆ∑≈––¡™œµ»À∫Õ∞◊√˚µ•]");
+				return;
+
+			}//ΩˆΩ” ‹¡™œµ»À∞◊√˚µ• end
+		}//    	 ±∂ŒπÊ‘Ú || ΩˆΩ” ‹¡™œµ»À∞◊√˚µ• end
 ///////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////
-//    	¬∫√ö√É√ª¬µ¬•
+    	//◊‘∂®“Â∞◊∫≈¬Î
+		writeError(mContext, "109");
+		if (allowWhiteNumbers(mContext,false)) {
+			return;
+		}
+		writeError(mContext, "110");
+    	//◊‘∂®“Â∞◊πÿº¸¥ 
+		if (allowWhiteWord(mContext)) {
+			return;
+		}
+		writeError(mContext, "111");
+    	//◊‘∂®“Â∆•≈‰Œª ˝
+		if (blockConutNumber(mContext, addressnumber)) {
+			return;
+		}
     	
-    	//¬∫√ö¬∫√Ö√Ç√´
-    	ArrayList<String> listPhoneNumber=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_BLOCKED_NUMBER + "' or type='"+Constants.TYPE_BLOCKED_BEGINNING_OF_NUMBER+"'");
+		writeError(mContext, "112");
+    	//◊‘∂®“Â∫⁄∫≈¬Î
+		if (blockCustomBlockedNumbers(mContext)) {
+			return;
+		}
+		writeError(mContext, "113");
+    	//◊‘∂®“Â∫⁄πÿº¸¥  
+		if (blockCustomBlockedKeyWords(mContext)) {
+			return;
+		}
+    	
+		writeError(mContext, "114");
+    	//¡™œµ»À
+    	if (allowPhoneContacts(mContext)) {
+			return;
+		}
+//    	¡™œµ»À end
+//    	writeError(mContext, "115");
+    	//’˝‘Ú±Ì¥Ô Ω 
+    	if (blockKeyWordRegexp(mContext)) {
+			return;
+		}
+
+//    	writeError(mContext, "116");
+    	//ƒ⁄÷√∞◊∫≈¬Î
+    	if (allowInWhiteNumbers(mContext)) {
+			return;
+		}
+    	
+    	
+//    	writeError(mContext, "117");
+    	//ø€∑—∫≈¬Î
+    	if (Pattern.matches("1062.*", addressnumber) || Pattern.matches("1066.*", addressnumber)) {
+    		blockMessage(mContext,"[ ’∑—“µŒÒ]");
+    		return;
+    	}
+    	//ø€∑—∫≈¬Î end   
+    	//ø…“…’©∆≠///////////////////
+    	final String[] zapianStrings=new String[] {".*’À∫≈.*",".*’Àªß.*",".*ª„[^\\p{P}]*«Æ.*",".*«Æ[^\\p{P}]*ª„.*",".*¥Ú[^\\p{P}]*«Æ.*",".*«Æ[^\\p{P}]*¥Ú.*",".*ª„[^\\p{P}]*øÓ.*",
+    			".*øÓ[^\\p{P}]*ª„.*",".*¥Ú[^\\p{P}]*øÓ.*",".*øÓ[^\\p{P}]*¥Ú.*",".*¥Ê[^\\p{P}]*øÓ.*",".*øÓ[^\\p{P}]*¥Ê.*",".*” ’˛.*∞¸π¸.*",
+    			".*∞¸π¸.*” ’˛.*",".*ª˙.*–“‘À.*¬Î.*",".*ª˙∫≈.*–“‘À.*",".*Õ®÷™.*Œ•’¬.*¡™œµ.*",
+    			".*“¯––[°ø\\]\\.\\°£]*\\w{0,3}",".*[°æ\\[].?––[°ø\\]]*\\w{0,3}"};
+    	int size=zapianStrings.length;
+    	
     	try {
-    		ArrayList<String> jsonPhoneNumber=JsonParse.stringBuilderToArray(JsonParse.jsonToStringBuilder(context,zhs.betalee.ccSMSBlocker.R.raw.black_num_list),null);
-    		listPhoneNumber.addAll(jsonPhoneNumber);
-    	} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    	String[] phoneNumbers = listPhoneNumber.toArray(new String[listPhoneNumber.size()]);
-    	int size=phoneNumbers.length;
-    	StringBuilder tempNum=new StringBuilder();
-    	for (int i=0;i<size;i++) {
-    		tempNum.append(phoneNumbers[i].replaceAll("\\?", ".").replaceAll("\\*", ".*"));
-    		try {
-    			
-				if (Pattern.matches(tempNum.toString(), addressnumber)) {
-					blockMessage(context, "[¬∫√ö¬∫√Ö√Ç√´]"+phoneNumbers[i]);
-					return;
-				}
-			} catch (RuntimeException e) {
-				
-			}
-			tempNum.delete(0, tempNum.length());
-			
-		}
-    	//¬∫√ö¬∫√Ö√Ç√´ end
-    	//√Ü¬•√Ö√§√é¬ª√ä√Ω
-    	ArrayList<String> listCountNumber=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_BLOCKED_COUNT_NUMBER + "'");
-    	String[] conutNumbers = listCountNumber.toArray(new String[listCountNumber.size()]);
-    	size=conutNumbers.length;
-    	int count=addressnumber.length();
-    	int tempCount;
-    	for (int i=0;i<size;i++) {
-    		tempCount=Integer.parseInt(conutNumbers[i]);
-    		try {	
-				if (count == tempCount) {
-					blockMessage(context, "[√Ü¬•√Ö√§√é¬ª√ä√Ω¬∫√Ö√Ç√´]"+conutNumbers[i]);
-					return;
-				}
-			} catch (RuntimeException e) {
-				
-			}
-		}
-    	//√Ü¬•√Ö√§√é¬ª√ä√Ω end
-    	
+    		for (int i=0;i<size;i++) {
 
-    	//ÂèØÁñëËØàÈ™ó///////////////////
-    	final String[] zapianStrings=new String[] {".*Ë¥¶Âè∑.*",".*Ë¥¶Êà∑.*",".*Ê±á[^\\p{P}]*Èí±.*",".*Èí±[^\\p{P}]*Ê±á.*",".*Êâì[^\\p{P}]*Èí±.*",".*Èí±[^\\p{P}]*Êâì.*",".*Ê±á[^\\p{P}]*Ê¨æ.*",
-    			".*Ê¨æ[^\\p{P}]*Ê±á.*",".*Êâì[^\\p{P}]*Ê¨æ.*",".*Ê¨æ[^\\p{P}]*Êâì.*",".*Â≠ò[^\\p{P}]*Ê¨æ.*",".*Ê¨æ[^\\p{P}]*Â≠ò.*",".*ÈÇÆÊîø.*ÂåÖË£π.*",
-    			".*ÂåÖË£π.*ÈÇÆÊîø.*",".*Êú∫.*Âπ∏Ëøê.*Á†Å.*",".*Êú∫Âè∑.*Âπ∏Ëøê.*",".*ÈÄöÁü•.*ËøùÁ´†.*ËÅîÁ≥ª.*",
-    			".*Èì∂Ë°å[„Äë\\]\\.\\„ÄÇ]*\\w{0,3}",".*[„Äê\\[].?Ë°å[„Äë\\]]*\\w{0,3}"};
-    	size=zapianStrings.length;
-
-    	for (int i=0;i<size;i++) {
-    		try {
-    			if (patternMatches(zapianStrings[i], msgbodyMatcher)&&addressnumber.length()==11) {
-    				blockMessage(mContext, "[ÂèØÁñëËØàÈ™ó]");
+    			if (Pattern.matches(zapianStrings[i], msgbodyString)&&addressnumber.length()==11) {
+    				blockMessage(mContext, "[ø…“…’©∆≠]");
     				return;
     			}
-    		} catch (RuntimeException e) {
     		}
+    	} catch (RuntimeException e) {
+    		e.printStackTrace();
+    		trycatch(mContext,"003");
     	}
-
+    	
+    	//ø…“…’©∆≠ end
     	
     	
-//ÂèØÁñëËØàÈ™ó end
-/////////////////////
-    	
-
-    	
-    	
-    	
-    	//¬∫√ö¬π√ò¬º√º¬¥√ä 
-    	ArrayList<String> listKeyWord=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_BLOCKED_KEYWORD +"'");
-    	try {
-    		ArrayList<String> jsonKeyWord=JsonParse.stringBuilderToArray(JsonParse.jsonToStringBuilder(context,zhs.betalee.ccSMSBlocker.R.raw.black_keyword_list),"KEYWORD");
-    		listKeyWord.addAll(jsonKeyWord);
-    	} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+//    	writeError(mContext, "118");
+    	//ƒ⁄÷√∫⁄πÿº¸¥  
+    	if (blockInBlockedKeyWords(mContext)) {
+			return;
 		}
-    	String[] keyWords = listKeyWord.toArray(new String[listKeyWord.size()]);
-    	size=keyWords.length;
-
-    	for (int i=0;i<size;i++) {
-			StringBuilder mKeyWord=new StringBuilder(keyWords[i]);
-			mKeyWord.insert(0, ".*");
-			mKeyWord.insert(mKeyWord.length(), ".*");
-    		try {
-    			
-				if (Pattern.matches(mKeyWord.toString(), msgbodyString)) {
-					blockMessage(context, "[¬π√ò¬º√º¬¥√ä]"+keyWords[i]);
-					return;
-				}
-			} catch (RuntimeException e) {
-				
-			}
-			
-		}
-    	//¬∫√ö¬π√ò¬º√º¬¥√ä end
-    	//√ï√Ω√î√≤¬±√≠¬¥√Ø√ä¬Ω 
-    	ArrayList<String> listRegexp=ReadRules.getNumberRules(mDbAdapter,"type='"+ Constants.TYPE_BLOCKED_KEYWORD_REGEXP + "'");
-    	String[] regexpKeyWords = listRegexp.toArray(new String[listRegexp.size()]);
-    	size=regexpKeyWords.length;
-    	for (int i=0;i<size;i++) {
-
-    		try {	
-				if (Pattern.matches(regexpKeyWords[i], msgbodyString)) {
-					blockMessage(context, "[√ï√Ω√î√≤¬±√≠¬¥√Ø√ä¬Ω ]"+regexpKeyWords[i]);
-					return;
-				}
-			} catch (RuntimeException e) {
-			}
-		}
-    	//√ï√Ω√î√≤¬±√≠¬¥√Ø√ä¬Ω end
+//    	writeError(mContext, "119");
     	
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+ 	
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
 ////////////////////////////////////////////////////////////////////////////
+    	allowMessage(mContext, "[√ª”–πÊ‘Ú]");
 //    	All End
-    	mDbAdapter.close();
+//    	mContext=null;
+//      System.out.println(System.currentTimeMillis()-start);
     }
 
-    private void blockMessage(Context mcontext,String blockString) {
+    private void blockMessage(Context mContext,String blockString) {
 		// TODO Auto-generated method stub
+//    	writeError(mContext, "120");
     	abortBroadcast();
-        mDbAdapter.createOne(formaddress, msgbody.toString(),fromtime,blockString);
-        mDbAdapter.close();
-        MessageUtils.updateNotifications(mcontext,msgbody.toString());
-       
+    	Long blockedcount=mDbAdapter.createOne(formaddress, msgbody.toString(),fromtime,blockString);
+    	mDbAdapter=null;
+
+
+        int unreadcount =MessageUtils.readUnreadCountSharedPreferences(mContext);
+        MessageUtils.writeUnreadCountSharedPreferences(mContext, ++unreadcount);
+        MessageUtils.updateNotifications(mContext,formaddress.toString(),msgbody.toString());
+        MessageUtils.writeStringSharedPreferences(mContext, "blockedcount", blockedcount.toString());
+	       
+        msgbody.delete(0, msgbody.length());
+        writeError(mContext, "000");
+        finishBlockSms();
 	}
 
+    private void allowMessage(Context mContext,String allowString) {
+		// TODO Auto-generated method stub
+//    	writeError(mContext, "121");
+    	mDbAdapter.createAllowOne(formaddress, fromtime,allowString);
+    	mDbAdapter=null;
+    	
 
+        msgbody.delete(0, msgbody.length());
+        writeError(mContext, "000");
+        finishBlockSms();
+	}
     
     
-	protected void onReceiveWithPrivilege(Context context, Intent intent, boolean privileged) {
+    public static String[] concat(String[] a, String[] b) {
+    	if (a.length==0) {
+			return b;
+		}else if (b.length==0) {
+			return a;
+		}
+    	String[] c= new String[a.length+b.length];
+    	System.arraycopy(a, 0, c, 0, a.length);
+    	System.arraycopy(b, 0, c, a.length, b.length);
+    	return c;
+    }
+    
+    
+    
+    protected void onReceiveWithPrivilege(Context context, Intent intent, boolean privileged) {
         // If 'privileged' is false, it means that the intent was delivered to the base
         // no-permissions receiver class.  If we get an SMS_RECEIVED message that way, it
         // means someone has tried to spoof the message by delivering it outside the normal
         // permission-checked route, so we just ignore it.
-//        if (!privileged && intent.getAction().equals(Intents.SMS_RECEIVED_ACTION)) {
-//            return;
-//        }
+        if (!privileged && intent.getAction().equals(SMS_RECEIVED_ACTION)) {
+            return;
+        }
 
         intent.setClass(context, SmsReceiverService.class);
         intent.putExtra("result", getResultCode());
-//        beginStartingService(context, intent);
-        context.startService(intent);
+        beginStartingService(context, intent);
     }
 
     // N.B.: <code>beginStartingService</code> and
@@ -336,12 +313,18 @@ public class SmsReceiver extends BroadcastReceiver {
     // <code>com.android.calendar.AlertReceiver</code>.  We should
     // factor them out or, even better, improve the API for starting
     // services under wake locks.
-
     /**
      * Start the service to process the current event notifications, acquiring
      * the wake lock before returning to ensure that the service will run.
-     */
-    public static void beginStartingService(Context context, Intent intent) {
+     
+	 PARTIAL_WAKE_LOCK£∫∆¡ƒª∫Õº¸≈Ãµ∆‘ –Ìœ®√£ª
+
+     SCREEN_DIM_WAKE_LOCK:∆¡ƒª±£≥÷µ„¡¡£®∆¡ƒªΩ´Ω¯»ÎDIM◊¥Ã¨£©£¨º¸≈Ãµ∆‘ –Ìœ®√£ª
+
+     SCREEN_BRIGHT_WAKE_LOCK£∫∆¡ƒª±£≥÷µ„¡¡£¨º¸≈Ãµ∆‘ –Ìœ®√£ª
+
+     FULL_WAKE_LOCK£∫∆¡ƒª∫Õº¸≈Ãµ∆±£≥÷∏ﬂ¡¡œ‘ æ£ª*/
+    private void beginStartingService(Context context, Intent intent) {
         synchronized (mStartingServiceSync) {
             if (mStartingService == null) {
                 PowerManager pm =
@@ -351,7 +334,8 @@ public class SmsReceiver extends BroadcastReceiver {
                 mStartingService.setReferenceCounted(false);
             }
             mStartingService.acquire();
-            context.startService(intent);
+//            System.out.print("mStartingService.acquire");
+//            context.startService(intent);
         }
     }
 
@@ -359,23 +343,330 @@ public class SmsReceiver extends BroadcastReceiver {
      * Called back by the service when it has finished processing notifications,
      * releasing the wake lock if the service is now stopping.
      */
-    public static void finishStartingService(Service service, int startId) {
+//    public static void finishStartingService(Service service, int startId) {
+//        synchronized (mStartingServiceSync) {
+//            if (mStartingService != null) {
+//                if (service.stopSelfResult(startId)) {
+//                    mStartingService.release();
+//                }
+//            }
+//        }
+//    }
+    private void finishBlockSms() {
         synchronized (mStartingServiceSync) {
             if (mStartingService != null) {
-                if (service.stopSelfResult(startId)) {
-                    mStartingService.release();
-                }
+            	mStartingService.release();
+//            	System.out.print("mStartingService.release");
             }
         }
     }
+
     
-    public void finishBlockSms(Service service, int startId) {
-    	if (service.stopSelfResult(startId)) {
-    		abortBroadcast();
-                   }
-                }
-    public boolean patternMatches(String regexpstr, String string) {
-		String regexp = regexpstr.replaceAll("\\?", ".").replaceAll("\\*", ".*");
-		return Pattern.matches(regexp, string);
-	}
+    /*
+    private boolean patternMatches(String regexpstr, Matcher matcher) {
+    	Pattern pattern=Pattern.compile(regexpstr);
+    	matcher.usePattern(pattern);
+    	return matcher.matches();
+    }
+    private boolean patternFind(String regexpstr, Matcher matcher) {
+    	Pattern pattern=Pattern.compile(regexpstr);
+    	matcher.usePattern(pattern);
+    	if (matcher.find()) {
+			return true;
+		}
+    	matcher.reset();
+    	return false;
+    }
+    */
+    private boolean patternFind(String regexpstr, String msgbodyString) {
+    	Pattern pattern=Pattern.compile(regexpstr);
+    	Matcher matcher = pattern.matcher(msgbodyString);
+    	
+    	if (matcher.find()) {
+			return true;
+		}
+    	matcher.reset();
+    	return false;
+    }
+    
+//    ===================================================
+   private boolean allowPhoneContacts(Context mContext){
+//	   ¡™œµ»À
+	   String[] phoneNums =ReadRules.getPhoneContacts(mContext,MCC);
+
+    	int size=phoneNums.length;
+    	
+    	try {
+    		for (int i=0;i<size;i++) {
+    			if (phoneNums[i]==null) {
+    				continue;
+    			}
+    			if (Pattern.matches(phoneNums[i], addressnumber)) {
+    				//					Toast.makeText(context,
+    				//							phoneNumber,Toast.LENGTH_LONG).show();
+    				// TODO Auto-generated method stub
+    				mDbAdapter=null;
+    			
+    				writeError(mContext, "000");
+    				finishBlockSms();
+    				return true;
+    			}
+    		}
+    	} catch (RuntimeException e) {
+    		e.printStackTrace();
+    		trycatch(mContext,"004");
+    		return false;
+    	}
+    	
+    	phoneNums=null;
+    	return false;
+    }
+   private boolean blockTime(Context mContext){
+	   // ±∂ŒπÊ‘Ú
+	   if (Settings.getBoolean(mContext, "period")) {
+		   final Time now = new Time();
+		   now.setToNow();
+		   final int nowMinuteOfDay=now.hour * 60 + now.minute;
+		   final int startMinuteOfDay=Settings.getInt(mContext, "startTimeHour")*60+Settings.getInt(mContext, "startTimeMin");
+		   final int endMinuteOfDay=Settings.getInt(mContext, "endTimeHour")*60+Settings.getInt(mContext, "endTimeMin");
+		   if (endMinuteOfDay > startMinuteOfDay) {
+			   if (nowMinuteOfDay >= startMinuteOfDay && nowMinuteOfDay <= endMinuteOfDay) {
+				   blockMessage(mContext, "[ ±∂ŒπÊ‘Ú]");
+				   return true;
+			   }
+
+		   }else {
+
+			   //    Ω· ¯ ±º‰–°”⁄ø™ º ±º‰,º¥øÁÃÏ
+			   if (nowMinuteOfDay >= startMinuteOfDay || nowMinuteOfDay <= endMinuteOfDay) {
+				   blockMessage(mContext, "[ ±∂ŒπÊ‘Ú]");
+				   return true;
+			   }
+		   }
+
+	   }
+	   return false;
+   }
+   private boolean allowWhiteNumbers(Context mContext,boolean andInWhiteNumbers){
+		//∞◊∫≈¬Î
+		String[] whitePhoneNumbers=ReadRules.getRulesNumbers(mDbAdapter,"type= "+ Constants.CUSTOM_TRUSTED_NUMBER ,MCC);
+
+		if (andInWhiteNumbers && Settings.getBoolean(mContext, "builtinwhitelist")) {
+			String[] inWhitePhoneNumbers=ReadRules.getRulesNumbers(mDbAdapter,"type= "+ Constants.IN_TRUSTED_NUMBER,MCC);
+			whitePhoneNumbers=concat(whitePhoneNumbers, inWhitePhoneNumbers);
+			inWhitePhoneNumbers=null;
+		}
+		int size=whitePhoneNumbers.length;
+
+		try {
+			for (int i=0;i<size;i++) {
+				if (whitePhoneNumbers[i].contains("?")) {
+					whitePhoneNumbers[i]=whitePhoneNumbers[i].replaceAll("\\?", ".");
+				}else if (whitePhoneNumbers[i].contains("*")) {
+					whitePhoneNumbers[i]=whitePhoneNumbers[i].replaceAll("\\*", ".*");
+				}
+				//        			Log.e("white", whitePhoneNumbers[i]);
+				if (Pattern.matches(whitePhoneNumbers[i], addressnumber)) {
+					allowMessage(mContext, "[∞◊∫≈¬Î] "+whitePhoneNumbers[i]);
+
+					return true;
+				}
+			}
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			trycatch(mContext,"005");
+			return false;
+		}
+
+		whitePhoneNumbers=null;
+		return false;
+   }
+   private boolean allowWhiteWord(Context mContext){
+		//∞◊πÿº¸¥ 
+		String[] whiteWord=ReadRules.getRulesStrings(mDbAdapter,"type= "+ Constants.CUSTOM_TRUSTED_KEYWORD);
+		int size=whiteWord.length;
+
+		try {
+			for (int i=0;i<size;i++) {
+				if (whiteWord[i].contains("*")) {
+					whiteWord[i]=whiteWord[i].replaceAll("\\*", ".*");
+				}
+
+				if (patternFind(whiteWord[i], msgbodyString)) {
+					allowMessage(mContext, "[◊‘∂®∞◊πÿº¸¥ ] "+whiteWord[i]);
+
+					return true;
+				}
+			}
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			trycatch(mContext,"006");
+			return false;
+		}
+		
+		whiteWord=null;
+		return false;
+   }
+   private boolean blockConutNumber(Context mContext,String addressnumber){
+   	//◊‘∂®“Â∆•≈‰Œª ˝
+	   String[] conutNumbers=ReadRules.getRulesStrings(mDbAdapter,"type="+ Constants.CUSTOM_BLOCKED_COUNT_NUMBER);
+	   int size=conutNumbers.length;
+
+	   final String count=Integer.toString(addressnumber.length());
+
+	   try {	
+		   for (int i=0;i<size;i++) {
+			   //   		tempCount=Integer.parseInt(conutNumbers[i]);
+			   if (count.equals(conutNumbers[i])) {
+				   blockMessage(mContext, "[◊‘∂®∆•≈‰Œª ˝] "+conutNumbers[i]);
+				   return true;
+			   }
+		   }
+	   } catch (RuntimeException e) {
+		   e.printStackTrace();
+		   trycatch(mContext,"007");
+		   return false;
+	   }
+	   
+	   conutNumbers=null;
+	   return false;
+   }
+   private boolean blockCustomBlockedNumbers(Context mContext){
+   	//◊‘∂®“Â∫⁄∫≈¬Î
+	   String[] phoneNumbers=ReadRules.getRulesNumbers(mDbAdapter,"type= "+ Constants.CUSTOM_BLOCKED_NUMBER ,MCC);
+
+	   int size=phoneNumbers.length;
+	   StringBuilder tempNum=new StringBuilder();
+
+	   try {
+		   for (int i=0;i<size;i++) {
+			   tempNum.append(phoneNumbers[i].replaceAll("\\?", ".").replaceAll("\\*", ".*"));
+
+			   //   			Log.e("black_num_list", tempNum.toString());
+			   if (Pattern.matches(tempNum.toString(), addressnumber)) {
+				   blockMessage(mContext, "[◊‘∂®∫⁄∫≈¬Î]"+phoneNumbers[i]);
+				   return true;
+			   }
+			   tempNum.delete(0, tempNum.length());
+
+		   }
+	   } catch (RuntimeException e) {
+		   e.printStackTrace();
+		   trycatch(mContext,"008");
+		   return false;
+	   }
+		   
+	   
+	   phoneNumbers=null;
+	   return false;
+   }
+   private boolean blockCustomBlockedKeyWords(Context mContext){
+   	//◊‘∂®“Â∫⁄πÿº¸¥  
+   	String[] customBKeyWords=ReadRules.getRulesStrings(mDbAdapter,"type="+ Constants.CUSTOM_BLOCKED_KEYWORD);
+//   	final String[] keyWords = listKeyWord.toArray(new String[listKeyWord.size()]);
+   	int size=customBKeyWords.length;
+
+   	try {
+   		for (int i=0;i<size;i++) {
+
+   			if (patternFind(customBKeyWords[i], msgbodyString)) {
+   				blockMessage(mContext, "[◊‘∂®∫⁄¥ ] "+customBKeyWords[i]);		
+   				return true;
+   			}
+   		}
+   	} catch (RuntimeException e) {
+   		e.printStackTrace();
+   		trycatch(mContext,"009");
+   		return false;
+   	}
+
+   	customBKeyWords=null;
+   	return false;
+   }
+   private boolean blockKeyWordRegexp(Context mContext){
+   	//’˝‘Ú±Ì¥Ô Ω 
+   	String[] regexpKeyWords=ReadRules.getRulesStrings(mDbAdapter,"type='"+ Constants.CUSTOM_BLOCKED_KEYWORD_REGEXP + "'");
+   	int size=regexpKeyWords.length;
+
+   	try {	
+   		for (int i=0;i<size;i++) {
+
+   			if (Pattern.matches(regexpKeyWords[i], msgbodyString)) {
+   				blockMessage(mContext, "[’˝‘Ú Ω] "+regexpKeyWords[i]);
+   				return true;
+   			}
+   		}
+   	} catch (RuntimeException e) {
+   		//				Log.e("RuntimeException", regexpKeyWords[i]);
+   		e.printStackTrace();
+   		trycatch(mContext,"010");
+   		return false;
+   	}
+
+   	regexpKeyWords=null;
+   	return false;
+   }
+   private boolean allowInWhiteNumbers(Context mContext){
+	   //ƒ⁄÷√∞◊∫≈¬Î
+	   if (Settings.getBoolean(mContext, "builtinwhitelist")) {
+		   //   		System.out.println("builtinwhitelist");
+		   String[] inWhitePhoneNumbers=ReadRules.getRulesNumbers(mDbAdapter,"type= "+ Constants.IN_TRUSTED_NUMBER,MCC);
+
+		   int size=inWhitePhoneNumbers.length;
+
+		   try {
+			   for (int i=0;i<size;i++) {
+				   if (inWhitePhoneNumbers[i].contains("?")) {
+					   inWhitePhoneNumbers[i]=inWhitePhoneNumbers[i].replaceAll("\\?", ".");
+				   }else if (inWhitePhoneNumbers[i].contains("*")) {
+					   inWhitePhoneNumbers[i]=inWhitePhoneNumbers[i].replaceAll("\\*", ".*");
+				   }
+				   //   			Log.e("white", whitePhoneNumbers[i]);
+				   if (Pattern.matches(inWhitePhoneNumbers[i], addressnumber)) {
+					   allowMessage(mContext, "[ƒ⁄÷√∞◊∫≈¬Î] "+inWhitePhoneNumbers[i]);
+					   return true;
+				   }
+			   }
+		   } catch (RuntimeException e) {
+			   e.printStackTrace();
+			   trycatch(mContext,"011");
+			   return false;
+		   }
+		   
+		   inWhitePhoneNumbers=null;
+	   }
+	   return false;
+   }
+   private boolean blockInBlockedKeyWords(Context mContext){
+	   //ƒ⁄÷√∫⁄πÿº¸¥  
+	   if (Settings.getBoolean(mContext, "builtinblacklist")) {
+		   //   		System.out.println("builtinblacklist");
+		   String[] keyWords=ReadRules.getRulesStrings(mDbAdapter,"type='"+ Constants.IN_BLOCKED_KEYWORD +"'");
+
+		   int size=keyWords.length;
+		   try {
+			   for (int i=0;i<size;i++) {
+				   if (patternFind(keyWords[i], msgbodyString)) {
+					   blockMessage(mContext, "[ƒ⁄÷√∫⁄¥ ] "+keyWords[i]);
+					   return true;
+				   }
+			   }
+		   } catch (RuntimeException e) {
+			   e.printStackTrace();
+			   trycatch(mContext,"012");
+			   return false;
+		   }
+		   keyWords=null;
+	   }
+	   return false;
+   }
+   private void writeError(Context context,String errorcode){
+	   MessageUtils.writeStringSharedPreferences(context, "ErrorCode", errorcode);
+   }
+   
+   private void trycatch(Context context,String errorcode){
+	   MessageUtils.writeStringSharedPreferences(context, "ErrorCode", errorcode);
+	   MessageUtils.updateNotifications(context,"«Î∞Ô√¶∏ƒΩ¯CC","∑¥¿°¥ÌŒÛ¥˙¬Î∏¯Œ“£∫"+errorcode);
+   }
+   
 }

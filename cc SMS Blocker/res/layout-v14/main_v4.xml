@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/mainLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+  xmlns:android="http://schemas.android.com/apk/res/android">
+<TextView android:id="@+id/mainv4_TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" 
+                android:layout_above="@+id/mainv4_TableLayout"
+                android:textColor="#99000000"
+                />
+    <TableLayout android:id="@+id/mainv4_TableLayout" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerHorizontal="true" android:layout_centerVertical="true">
+ <TableRow android:layout_marginBottom="5dp">
+        <LinearLayout
+            android:id="@+id/main4_btn_smsblockedlog" 
+            style="?android:attr/borderlessButtonStyle" android:orientation="vertical"
+             android:paddingLeft="15dp" android:paddingRight="15dp" android:paddingTop="5dp" android:paddingBottom="5dp">
+
+ <!--            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="128px"
+                android:layout_gravity="center"
+                android:src="@drawable/smsblockedlog" />
+--> 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" android:textColor="#ff33B5E5"
+                android:text="@string/title_SmsBlockedLog" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main4_btn_smsrules"
+            style="?android:attr/borderlessButtonStyle" android:orientation="vertical"
+            android:paddingLeft="15dp" android:paddingRight="15dp" android:paddingTop="5dp" android:paddingBottom="5dp"
+             >
+
+ <!--            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="128px"
+                android:layout_gravity="center"
+                android:src="@drawable/smsrules" />
+--> 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" android:textColor="#ffAA66CC"
+                android:text="短信规则" />
+        </LinearLayout>
+        </TableRow>
+         
+         <TableRow> 
+           <LinearLayout
+            android:id="@+id/main4_btn_settings"
+            style="?android:attr/borderlessButtonStyle" android:orientation="vertical"
+            android:paddingLeft="15dp" android:paddingRight="15dp" android:paddingTop="5dp" android:paddingBottom="5dp">
+
+<!--             <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="128px"
+                android:layout_gravity="center"
+                android:src="@drawable/settings" />
+--> 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" android:textColor="#ffFF4444"
+                android:text="设置" />
+        </LinearLayout>
+           <LinearLayout
+            android:id="@+id/main4_btn_help"
+            style="?android:attr/borderlessButtonStyle" android:orientation="vertical"
+            android:paddingLeft="15dp" android:paddingRight="15dp" android:paddingTop="5dp" android:paddingBottom="5dp"
+             >
+
+ <!--            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="128px"
+                android:layout_gravity="center"
+                android:src="@drawable/help" />
+--> 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" android:textColor="#ff669900"
+                android:text="帮助" />
+        </LinearLayout>
+             </TableRow>
+    </TableLayout>
+    <TableLayout android:paddingBottom="5.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" android:layout_centerVertical="true">
+        <TableRow>
+                <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" android:textColor="@android:color/secondary_text_light_nodisable"
+                android:text="Copyright © 2013 Beta" />
+     </TableRow>
+    </TableLayout>
+</RelativeLayout>

@@ -15,17 +15,23 @@ import zhs.betalee.ccSMSBlocker.R;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class JsonParse {
 
-	public static String jsonToStringBuilder(Context mContext,int RawResource){
+	public static String jsonToStringBuilder(Context mContext,int RawResource,boolean isUTF8){
 		// **********解析txt
 		InputStream inputStream = mContext.getResources().openRawResource(RawResource);
 
 		InputStreamReader inputStreamReader = null;
 
 		try {
-			inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
+			if (isUTF8) {
+				inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
+			}else {
+				inputStreamReader = new InputStreamReader(inputStream);
+			}
+
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -42,21 +48,25 @@ public class JsonParse {
 			e.printStackTrace();
 		}
 		// >>>>>>>>>>>>>>>>>>>>>>>>>完成读取TXT,变量sb
+//		Log.e("sb.toString",sb.toString());
 		return sb.toString();
+		
 	}
 
-	public static ArrayList<String> stringBuilderToArray(String lrc1,String objectString)
+	public static String[] stringBuilderToArray(String lrc1,String objectString)
 	throws Exception {
-if (objectString==null) {
-	objectString="NUMBER";
-}
-		ArrayList<String> mlists = new ArrayList<String>();
+		if (objectString==null) {
+			objectString="NUM";
+		}
+//		ArrayList<String> mlists = new ArrayList<String>();
 
 
 		// JSONArray contentArray1=getJSONArray(lrc1);
 		JSONArray ja = new JSONArray(lrc1);
 		int jalength=ja.length();
 //		System.out.println("一共有对象的个数" + jalength);
+		String[] mlists=new String[jalength];
+		
 		for (int j = 0; j < jalength; j++) {
 
 			// JSONObject jsonObject=new JSONObject(lrc1);
@@ -69,14 +79,69 @@ if (objectString==null) {
 				continue;
 			
 //				number.replaceAll("\\?", ".").replaceAll("\\*", ".*");
-				mlists.add(number);
+				mlists[j]=number;
 			
 
 		}
 		return mlists;
 	}
-
-	
+//	// Query the API for content
+//    String content = getUrlContent(String.format(WIKTIONARY_PAGE,
+//            encodedTitle, expandClause));
+//    try {
+//        // Drill into the JSON response to find the content body
+//        JSONObject response = new JSONObject(content);
+//        JSONObject query = response.getJSONObject("query");
+//        JSONObject pages = query.getJSONObject("pages");
+//        JSONObject page = pages.getJSONObject((String) pages.keys().next());
+//        JSONArray revisions = page.getJSONArray("revisions");
+//        JSONObject revision = revisions.getJSONObject(0);
+//        return revision.getString("*");
+//    } catch (JSONException e) {
+//        throw new ParseException("Problem parsing API response", e);
+//    }
+	 /**
+     * Convert the RawContact object into a JSON string.  From the
+     * JSONString interface.
+     * @return a JSON string representation of the object
+     */
+//    public JSONObject toJSONObject() {
+//        JSONObject json = new JSONObject();
+//
+//        try {
+//            if (!TextUtils.isEmpty(mFirstName)) {
+//                json.put("f", mFirstName);
+//            }
+//            if (!TextUtils.isEmpty(mLastName)) {
+//                json.put("l", mLastName);
+//            }
+//            if (!TextUtils.isEmpty(mCellPhone)) {
+//                json.put("m", mCellPhone);
+//            }
+//            if (!TextUtils.isEmpty(mOfficePhone)) {
+//                json.put("o", mOfficePhone);
+//            }
+//            if (!TextUtils.isEmpty(mHomePhone)) {
+//                json.put("h", mHomePhone);
+//            }
+//            if (!TextUtils.isEmpty(mEmail)) {
+//                json.put("e", mEmail);
+//            }
+//            if (mServerContactId > 0) {
+//                json.put("i", mServerContactId);
+//            }
+//            if (mRawContactId > 0) {
+//                json.put("c", mRawContactId);
+//            }
+//            if (mDeleted) {
+//                json.put("d", mDeleted);
+//            }
+//        } catch (final Exception ex) {
+//            Log.i(TAG, "Error converting RawContact to JSONObject" + ex.toString());
+//        }
+//
+//        return json;
+//    }
 //	// >>>>>>>>>>>>>>>>>>>>>>>>>网络取json
 //	/**
 //	 * 解析Json数据

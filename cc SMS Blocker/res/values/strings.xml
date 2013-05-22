@@ -1,46 +1,162 @@
 <resources>
-    <string name="app_name">CC短信过滤</string>
-    <string name="app_ver">0.0.1.6</string>
+    <string name="app_name">CC短信拦截</string>
+    <string name="app_name_summary">CC短信拦截 - 专注短信拦截</string>
+    <string name="en_app_name">Anything Block</string>
+    <string name="app_ver">0.0.5.7</string>
     <string name="label_match_rule">匹配规则</string>
     <string name="label_keyword">输入</string>
-    <string name="btn_Blocked_Msg">已过滤短信</string>
-    <string name="btn_Rules">规则</string>
-    <string name="rules_empty">没有规则</string>
+    <string name="btn_Notify_Ad">通知栏广告</string>
+    <string name="btn_Blocked_Msg">已拦截短信</string>
+    <string name="btn_Rules">自定义规则</string>
+    <string name="rules_empty">没有内容</string>
     <string name="btn_add_rule">添加规则</string>
-    <string name="type_blocked_number">[黑]完全匹配号码</string>
-    <string name="type_trusted_number">[白]信任号码</string>
-	<string name="type_blocked_beginning_of_number">[黑]匹配号码开头</string>
-	<string name="type_blocked_keyword">[黑]过滤关键词</string>
-	<string name="type_trusted_keyword">[白]信任关键词</string>
-	<string name="type_blocked_count_number">[黑]过滤匹配位数号码</string>
-	<string name="type_blocked_keyword_regexp">(正则表达式)过滤关键词</string>
-	<string name="type_blocked_number_tips">[例]13800138000</string>
-    <string name="type_trusted_number_tips">[例]13800138000</string>
-	<string name="type_blocked_beginning_of_number_tips">[例]13800*</string>
-	<string name="type_blocked_keyword_tips">[例]发票(自动生成正则式)</string>
-	<string name="type_trusted_keyword_tips">[例]朋友</string>
-	<string name="type_blocked_count_number_tips">[例] 9</string>
-	<string name="type_blocked_keyword_regexp_tips">JAVA高级用户,谨慎使用</string>
+    <string name="btn_search_rule">搜索</string>
+
+	<string name="custom_blocked_number">[自定黑]匹配号码</string>
+    <string name="mms_custom_blocked_number">[自定黑]彩信匹配号码</string>
+    <string name="in_trusted_number">[内置白]信任号码</string>
+    <string name="custom_trusted_number">[自定白]信任号码</string>
+    <string name="in_blocked_keyword">[内置黑]过滤关键词</string>
+    <string name="custom_blocked_keyword">[自定黑]过滤关键词</string>
+	<string name="custom_trusted_keyword">[自定白]信任关键词</string>
+	<string name="custom_blocked_count_number">[自定黑]过滤匹配位数号码</string>
+	<string name="custom_blocked_keyword_regexp">(正则表达式)过滤关键词</string>
+	<string name="custom_number_tips">[例]10086; *086; 1008*;\n优先级 〉 联系人</string>
+    <string name="custom_mms_number_tips">[例]10086; *086; 1008*;\n优先级 〈 联系人</string>
+	<string name="in_blocked_keyword_tips">[例]发票(自动生成正则式)\n优先级 〈 联系人</string>
+	<string name="custom_blocked_keyword_tips">可拦截联系人,谨慎使用!\n优先级 〉 联系人</string>
+	<string name="custom_trusted_keyword_tips">[例]朋友\n优先级 〉 联系人</string>
+	<string name="custom_blocked_count_number_tips">[例] 9\n优先级 〉 联系人</string>
+	<string name="custom_blocked_keyword_regexp_tips">JAVA高级用户,谨慎使用\n优先级 〈 联系人</string>
+	<string name="in_trusted_number_tips">[例]10086; *086; 1008*;\n优先级 〉 [内置黑]</string>
+	
 	<string name="error_regexp">输入格式错误</string>
+	
+	<string name="btn_del_all">删除</string>
+	<string name="btn_recover_all">恢复</string>
+	<string name="btn_read_all">标记</string>
+	
+	
+	<string name="leftAction">左滑</string>
+	<string name="rightAction">右滑</string>
+	<string name="cb_del">删除(红色)</string>
+	<string name="cb_recover">恢复(绿色)</string>
+	<string name="cb_edit">编辑(绿色)</string>	
+		
+	<string name="sms">短信</string>
+	<string name="rules">规则</string>
+
+	<string name="title_SendSMSToEmail">反馈未能拦截短信</string>
+	<string name="title_AddressFormInbox">从收件箱添加号码</string>
+	<string name="title_ChoiceWayAddRule">添加规则</string>
+	<string name="title_AdvancedSettings">高级设置</string>
+	<string name="title_AdvancedWhiteRulesListView">内置白号码编辑</string>
+	<string name="title_AdvancedBlackRulesListView">内置黑名单编辑</string>
+	<string name="title_SystemRules">内置黑白名单</string>
+	<string name="title_AllowedMsgListView">短信放行记录</string>
+	<string name="title_TestSMSBlocker">测试短信拦截</string>
+	<string name="title_SmsBlockedLog">已拦截短信</string>
+	<string name="title_SmsRulesListView">自定义规则</string>
+	<string name="title_RulesHelp">帮助</string>
+	<string name="title_Donate">很不幸！您成了垃圾短信受害者</string>
+	<string name="title_SwipeSettings">滑动手势</string>
+	
+	
 	<string name="note">" 有BUG、功能建议及想法可发邮件至：
-godwasdog@gmail.com；
+ccsmsblocker@gmail.com
+
+ 主页：http://www.cnblogs.com/ccblocker
  
+         https://cc-sms-blocker.googlecode.com
+      
+〈CC短信拦截〉〈CC来电拦截〉〈CC短信弹窗〉
+
+  12321.cn 网络不良与垃圾信息举报受理中心 
+      电子邮箱：abuse@12321.cn
+======================================
+Simple is beautiful.
+简单、小巧、快速、专注
+Simple, Tiny, Fastest, Focused
+
+简洁才是最美。回归纯朴的自然体验，没有多余的页面没有多余的动作。您只要花一点点时间慢慢补全您自己的自定义规则，您将会收获更多的便利。
+
+1. 具有9种垃圾短信拦截规则，各种自定义设置，无需后台服务进程。
+2. 既提供给专业用户丰富的自定义设置，也能让普通用户零设置使用。
+3. MMS彩信拦截。
+4. WAP Push推送拦截
+5. 兼容Youni有你、Go短信、Handcent SMS等第三方短信客户端。
+6. 具有恢复误拦截短信到收件箱。
+7. 内置黑白名单编辑、单独开关。
+8. 具有时段设置拦截功能。
+9. 丰富的拦截记录管理功能：批量标记、恢复、删除。
+10. 支持快速搜索规则。
+11. 非联系人短信放行记录。
+12. 号码支持通配符?和*；内容支持正则表达式过滤。
+13. 关键词支持过滤干扰码。
+14. 免费。
+======================================
+注意：
+ 1.不能禁用了CC短信拦截的自启动
+ 2.开启后台服务请注意设置任务管理器排除白名单，以免功能失效。
+ 
+ 理解拦截优先级是使用的基础：
+自定义白号码 -> 自定义白关键词 -> 自定义匹配号码位数 -> 自定义黑号码 ->  自定义黑关键词 -> 手机联系人 -> 正则表达式 ->  内置白号码 -> 扣费类短信（1062*、1066*） -> 内置黑关键词 
+
  匹配规则：
- 1、[黑]完全匹配号码 ：过滤添加的号码，系统已内置部分黑号码。支持通配符?和*。[例]13800138000、13800*（13800开头的所有号码）、10086??（10086开头后两位任何号码）、*555（以555结尾的所有号码）
+ 1. [自定黑]匹配号码 ：过滤添加的号码，系统已内置部分黑号码。支持通配符?和*。[例]13800138000、13800*（13800开头的所有号码）、10086??（10086开头后两位任何号码）、*555（以555结尾的所有号码）
  
- 2、[白]信任号码 ：放行此号码，支持通配符?和*。
+ 2. [自定白]信任号码 ：放行此号码，支持通配符?和*。
  
- 3、[黑]匹配号码开头 ：[例]13800*（13800开头的所有号码）
+ 3. [自定黑]彩信匹配号码 ：过滤添加的彩信号码。支持通配符?和*。[例]13800138000、13800*（13800开头的所有号码）、10086??（10086开头后两位任何号码）、 *555（以555结尾的所有号码）
  
- 4、[黑]过滤关键词：系统已内置部分常见垃圾短信关键词。[例]发票（程序会自动生成正则式过滤短信，中间夹杂随机字符都可过滤）
+ 4. [内置黑]过滤关键词：系统已内置部分常见垃圾短信关键词。[例]发票（程序会自动生成正则式过滤短信，中间夹杂随机字符都可过滤）
  
- 5、[白]信任关键词：[例]朋友 （包含关键词的短信将放行）
+ 5. [自定白]信任关键词：[例]朋友 （包含关键词的短信将放行）
  
- 6、[黑]过滤匹配位数号码：[例] 9 （过滤所有9位长度的手机号码短信，不能添加过滤11位）
+ 6. [自定黑]过滤匹配位数号码：[例] 9 （过滤所有9位长度的手机号码短信，不能添加过滤11位）
  
- 7、(正则表达式)过滤关键词：JAVA语法，高级用户,谨慎使用。[例] [\\s\\w] （不需要转义符\\\\s）
+ 7. (正则表达式)过滤关键词：JAVA语法，高级用户,谨慎使用。[例] [\\s\\w] （不需要转义符\\\\s）
+ 
+ 8. [内置白]信任号码 ：[例]10086; *086; 1008*;\n优先级 〈 联系人
+ 
+ 9. [自定黑]过滤关键词 ：可拦截联系人,谨慎使用!\n优先级 〉 联系人
 
 （通配符?指任何一个字符，*指任何个字符）
+
+权限说明：
+android.permission.READ_CONTACTS
+ "读取联系人数据" 为白名单排除手机联系人的短信,即时读取不保存。 
+android.permission.RECEIVE_SMS
+ 接收短信广播 
+android.permission.RECEIVE_MMS
+ 接收彩信广播 
+android.permission.READ_SMS
+ 恢复短信到收件箱权限 
+android.permission.WRITE_SMS
+ 恢复短信到收件箱权限 
+android.permission.SEND_SMS
+ 发送短信权限：测试短信拦截 
+android.permission.RECEIVE_BOOT_COMPLETED
+ 开机启动短信后台服务 
+android.permission.WAKE_LOCK
+ 短信接收唤醒处理
+======================================
+ 常见问题 FAQ
+ 
+1. 双卡双待支持的问题
+   谷歌原生系统是不支持双卡双待手机的，所以双卡手机都是生产商自己改的系统，所以就会出现很多不同的系统，能力有限没办法支持得了。
+
+2. 软件所有功能在官方原生系统完美运行，有什么问题都系统或者使用环境问题，每个人的环境不可能都一样，如有不能运行的自己慢慢排除。
 "</string>
 	
+	<string name="test_sms_blocker">"测试会将本手机号码添加到自定义黑号码中，然后向本手机发送一条短信，以测试CC短信拦截的状态。
+
+测试短信资费按运营商套餐收费！
+开启后台服务请注意设置任务管理器排除白名单，以免功能失效。
+ 
+不能拦截短信的原因：
+	1. 首先查看‘短信放行记录’是否有放行规则。
+	2. CC短信拦截不支持双模手机。
+	3. 是否安装有‘安全卫士’类软件或者第三方短信软件（需要开启CC后台服务）？
+	4. 是否用了Autostart类软件禁用了CC短信拦截的自启动？"</string>
 </resources>

@@ -1,18 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <PreferenceCategory android:title="设置">
-        <CheckBoxPreference android:summaryOff="已关闭" android:summaryOn="已开启" android:title="开启CC短信过滤" android:defaultValue="true" android:key="enablesmsblocker"/>
-        <CheckBoxPreference android:key="phonecontact" android:defaultValue="true" android:summaryOff="按规则拦截" android:summaryOn="不拦截联系人（推荐）" android:title="手机联系人"/>
-        <CheckBoxPreference android:title="仅接受联系人和白名单" android:key="onlycontactwhite" android:defaultValue="false"/>
-        <EditTextPreference android:title="时段规则" android:enabled="false" android:selectable="false"/>
-        <CheckBoxPreference android:title="通知栏消息" android:summaryOn="开启拦截短信后提示" android:summaryOff="关闭拦截提示" android:defaultValue="true" android:key="enablenotification"/>
-        
-    </PreferenceCategory>
-    <PreferenceCategory android:title="关于">
-        <Preference android:selectable="false" android:summary="@string/app_ver" android:enabled="false" android:title="软件版本"/><Preference android:summary="Beta www.LCC.im" android:title="作者" android:selectable="false" android:enabled="false"/><Preference android:title="帮助" android:summary="匹配规则详细说明" android:key="ruleshelp" />
-        
-        <Preference android:summary="点击发送到 godwasdog@gmail.com" android:title="建议反馈" android:enabled="true" android:key="mailto"/>
-        
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="enablesmsblocker"
+        android:summaryOff="已关闭"
+        android:summaryOn="每次安装更新需重启手机"
+        android:title="短信拦截" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="enablewappushblocker"
+        android:summary="WAP Push推送，每次安装更新需重启手机"
+        android:summaryOff="WAP Push推送信息"
+        android:title="WAP拦截" />
+    <CheckBoxPreference
+        android:defaultValue="flase"
+        android:key="enablemmsblocker"
+        android:summary="仅支持号码匹配拦截"
+        android:title="彩信拦截" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="enablesmsblocker"
+        android:key="enableservice"
+        android:summary="兼容Youni、Go，开启后需重启手机"
+        android:summaryOff="兼容第三方短信客户端"
+        android:title="后台服务" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="enablesmsblocker"
+        android:key="onlycontactwhite"
+        android:summary="仅放行联系人和白名单短信"
+        android:title="联系人和白名单(短信)" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="enablemmsblocker"
+        android:key="mms_onlycontactwhite"
+        android:summary="仅放行联系人和白名单彩信"
+        android:title="联系人和白名单(彩信)" />
+    <Preference
+        android:key="testsmsblocker"
+        android:title="@string/title_TestSMSBlocker" />
+    <PreferenceCategory android:title="记录" >
+        <Preference
+            android:key="allowmsglog"
+            android:title="放行记录" android:summary="非联系人短信放行记录"/>
     </PreferenceCategory>
+        <PreferenceCategory android:title="高级" >
+        <Preference
+            android:key="smsruleslistview"
+            android:title="@string/title_SmsRulesListView" android:summary="自定义短信规则"/>
+        <Preference
+            android:key="systemrules"
+            android:summary="系统内置黑白名单"
+            android:title="内置规则" />
+        <Preference
+            android:key="AdvancedSettings"
+            android:summary="自定义高级设置"
+            android:title="@string/title_AdvancedSettings"/>
+        <Preference android:title="@string/title_SwipeSettings" android:key="swpiesettings"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="时段" >
+        <CheckBoxPreference
+            android:defaultValue="flase"
+            android:dependency="enablesmsblocker"
+            android:key="period"
+            android:summaryOff="已关闭"
+            android:summaryOn="时段内仅接收联系人短信"
+            android:title="时段规则" />
+
+        <Preference
+            android:dependency="period"
+            android:key="starttime"
+            android:title="开始时间" />
+        <Preference
+            android:dependency="period"
+            android:key="endtime"
+            android:title="结束时间" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="通知" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="enablenotification"
+            android:summaryOff="关闭拦截提示"
+            android:summaryOn="开启拦截短信后提示"
+            android:title="通知栏消息" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="enablenotification"
+            android:key="notifyled"
+            android:summaryOff="已关闭LED提示"
+            android:summaryOn="已开启LED提示"
+            android:title="LED" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="关于" >
+        <Preference
+            android:selectable="false"
+            android:summary="@string/app_ver"
+            android:title="软件版本" />
+        <Preference
+            android:key="author"
+            android:summary="Beta\n点击捐助&lt;CC短信拦截>"
+            android:title="捐助作者" />
+        
+        <Preference android:key="ruleshelp" android:title="@string/title_RulesHelp"/><Preference android:key="pinfen" android:title="去Google play评分" />
+        <Preference
+            android:key="sendsmstoemail"
+            android:summary="反馈收件箱中的短信"
+            android:title="补全计划" />
+        <Preference
+            android:key="mailto"
+            android:summary="点击发送到 ccSMSBlocker@gmail.com"
+            android:title="建议反馈" />
+        <Preference
+            android:key="shareCC"
+            android:title="分享&lt;CC短信拦截>给好友" />
+        
+    </PreferenceCategory>
+
+    
+
 </PreferenceScreen>

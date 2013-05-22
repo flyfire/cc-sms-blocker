@@ -13,7 +13,7 @@ public class RulesHelp extends Activity{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.help);
-		((TextView)findViewById(R.id.TextView_note)).setMovementMethod(ScrollingMovementMethod.getInstance());
+//		((TextView)findViewById(R.id.TextView_note)).setMovementMethod(ScrollingMovementMethod.getInstance());
 	}
 
 	@Override

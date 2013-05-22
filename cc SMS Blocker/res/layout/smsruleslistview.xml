@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/mainLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Button
+        android:id="@+id/btn_add_rule"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="5dp"
+        android:background="@drawable/btn_bg"
+        android:drawableLeft="@android:drawable/ic_menu_add"
+        android:text="@string/btn_add_rule"
+        android:textColor="#ff333333"
+        android:textSize="18.0sp" />
+
+    <ListView
+        android:id="@+id/ruleslist" android:layout_below="@+id/btn_add_rule"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/rules_empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/rules_empty"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#999"
+        android:textSize="20sp" />
+</RelativeLayout>

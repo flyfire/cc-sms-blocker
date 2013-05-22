@@ -170,6 +170,7 @@ public final class HorizontalPager extends ViewGroup {
             Display display =
                     ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
                             .getDefaultDisplay();
+            @SuppressWarnings("deprecation")
             int displayWidth = display.getWidth();
 
             mNextScreen = Math.max(0, Math.min(getCurrentScreen(), getChildCount() - 1));
@@ -313,7 +314,7 @@ public final class HorizontalPager extends ViewGroup {
         }
         mLastMotionX = x;
         mLastMotionY = y;
-
+        
         return true;
     }
 

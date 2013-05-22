@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:id="@+id/DonateScrollView">
+  <LinearLayout
+    android:id="@+id/DonateLinearLayout"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+    <TextView
+      android:textColor="?android:attr/textColorPrimaryDisableOnly"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      android:autoLink="all"
+      android:id="@+id/DonateTextView"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="捐助&lt;CC短信拦截>以获得发展\n这是一个免费的软件，没有付费下载，没有广告插播。\n要获得发展就离不开您的捐助\n\n如何去掉提示：\n1. 卸载本软件后重新安装\n2. 捐助CC后Email(ccSMSBlocker@gmail.com)联系作者"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp"
+      android:paddingTop="5dp"
+      android:paddingBottom="12dp" />
+    <Button
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/DonateButton"
+      android:layout_gravity="center_horizontal"
+      android:text="通过 支付宝 捐助"></Button>
+
+  </LinearLayout>
+</ScrollView>
